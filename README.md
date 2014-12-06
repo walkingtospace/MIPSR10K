@@ -9,6 +9,7 @@ MIPS R10000 architecture simulator with C++
 	- [Document history with TimelineJS](#document-history-with-timelinejs)
 	- [Add it to your site](#add-it-to-your-site)
 		- [Using Inline (easiest)](#using-inline-easiest)
+			- [Using Inline (easiest)]
 		- [Using a method (advanced)](#using-a-method-advanced)
 		- [Loading the files](#loading-the-files)
 	- [Config Options](#config-options)

@@ -30,7 +30,7 @@ MIPS R10000 architecture simulator with C++
 	- [Best practices](#best-practices)
 	- [License](#license)
 	
-## Software architecture 
+# Software architecture 
 ## Document history with TimelineJS
 
 There are lots of timeline tools on the web but they are almost all either

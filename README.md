@@ -5,7 +5,7 @@ MIPS R10000 architecture simulator with C++
 
 **Table of Contents**
 
-- [TimelineJS](#timelinejs)
+- [Software architecture](#Software architecture)
 	- [Document history with TimelineJS](#document-history-with-timelinejs)
 	- [Add it to your site](#add-it-to-your-site)
 		- [Using Inline (easiest)](#using-inline-easiest)
@@ -30,7 +30,7 @@ MIPS R10000 architecture simulator with C++
 	- [Best practices](#best-practices)
 	- [License](#license)
 	
-# TimelineJS 
+# Software architecture 
 ## Document history with TimelineJS
 
 There are lots of timeline tools on the web but they are almost all either

@@ -58,7 +58,6 @@ Place the embed code where you want the timeline to show in the `<body>` of your
 	</script>
 	<script type="text/javascript" src="http://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>
 ```
-
 	
 ## Config Options
 Here are some of the options you can set in the config.

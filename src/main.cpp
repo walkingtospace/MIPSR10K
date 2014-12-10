@@ -4,18 +4,22 @@
 #include "decodeUnit.h"
 #include "issueUnit.h"
 #include "executionUnit.h"
+#include "commitUnit.h"
 
-void startPipeline(FetchUnit* fu, DecodeUnit* du, IssueUnit* iu) {
-	while(1) {
+void startPipeline(FetchUnit* fu, DecodeUnit* du, IssueUnit* iu, ExecutionUnit* eu) {
+	int cnt = 10;
+	while(cnt--) {
 		fu->m_calc();
 		du->m_calc();
 		iu->m_calc();
+		eu->m_calc();
 
+		eu->m_edge();
 		iu->m_edge();
 		du->m_edge();
 		fu->m_edge();
 		
-		if(fu->m_isClean() && du->m_isClean() && iu->m_isClean()) { //work is done
+		if(fu->m_isClean() && du->m_isClean() && iu->m_isClean() && eu->m_isClean()) { //work is done
 			
 			break;
 		}
@@ -50,7 +54,7 @@ int main(int argc, char* argv[]) {
 		insId++;
 	}
 
-	startPipeline(&fetchUnit, &decodeUnit, &issueUnit);
+	startPipeline(&fetchUnit, &decodeUnit, &issueUnit, &exeUnit);
 
 	return 0;
 }

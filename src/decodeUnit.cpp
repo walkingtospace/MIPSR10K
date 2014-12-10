@@ -10,7 +10,6 @@ DecodeUnit::DecodeUnit(IssueUnit* input) {
 	}
 
 	for(int i=0; i<REGISTER_SIZE ; ++i) {
-	
 		busyBitTable[i] = 0;
 	}
 }
@@ -87,14 +86,12 @@ void DecodeUnit::m_calc() {
 
 			innerEnable = true;
 			m_setNextEnable(true);
-		} else if (input.m_getOp() == STORE || input.m_getOp() == BRANCH) { //rs,rt 
+		} else if (input.m_getOp() == BRANCH || input.m_getOp() == STORE) { //rs,rt 
 			int rs = std::stoi(input.m_getRs(),nullptr,16);
 			int rt = std::stoi(input.m_getRt(),nullptr,16);
-			int freeReg = m_getFreeList();
-			int oldFreeReg =  mapTable[rt];
-		
-			busyBitTable[freeReg] = 1;
-			mapTable[rt] = freeReg;
+			int rd = std::stoi(input.m_getRd(),nullptr,16);
+			int oldFreeReg = mapTable[rd];
+	
 			ActiveList actItem(oldFreeReg, rt, 0); //dest, arch, doneBit
 
 			input.m_setActivelistNum(activeListNum);
@@ -133,5 +130,7 @@ void DecodeUnit::m_edge() { //already checked queus is available
 		iu->m_getBusyTable(m_transmitBusyTable());
 
 		ins.pop_front();
+	} else {
+
 	}
 }

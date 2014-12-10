@@ -9,6 +9,8 @@ MIPS R10000 architecture simulator with C++
 - [Class Diagram](#class-diagram)
 - [Hardware Block Diagram](#hardware-block-diagram)
 - [Source](#Source)
+- [Test set](#test-set)
+- [References](#references)
 - [License](#license)
 	
 ## Software Architecture 

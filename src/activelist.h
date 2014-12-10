@@ -8,6 +8,7 @@ public:
 	int ArchReg;
 	int doneBit; //init with 0 
 
+	ActiveList();
 	ActiveList(int dest, int arch, int done);
 	~ActiveList();
 };

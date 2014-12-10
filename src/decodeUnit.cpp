@@ -1,17 +1,16 @@
 #include "decodeUnit.h"
 
 DecodeUnit::DecodeUnit(IssueUnit* input) {
-	BUFFSIZE = 8;
-	LISTSIZE = 32;
 	iu = input;
 	activeListNum = 0;
 
-	for(int i=0 ; i<32 ; ++i) { //32 is QUEUESIZE
+	for(int i=0 ; i<REGISTER_SIZE ; ++i) { //32 is QUEUESIZE
 		freeList.push(i);
 		mapTable[i] = i;
 	}
 
-	for(int i=0; i<32 ; ++i) {
+	for(int i=0; i<REGISTER_SIZE ; ++i) {
+	
 		busyBitTable[i] = 0;
 	}
 }
@@ -31,6 +30,12 @@ int DecodeUnit::m_getFreeList() {
 	return reg; 
 }
 
+int* DecodeUnit::m_transmitBusyTable() {
+
+	return busyBitTable;
+}
+
+
 bool DecodeUnit::m_isClean() {
 	if(ins.size() != 0) {
 
@@ -42,7 +47,7 @@ bool DecodeUnit::m_isClean() {
 };
 
 bool DecodeUnit::m_getEnable() {
-	if(ins.size() < BUFFSIZE && innerEnable == true) {
+	if(ins.size() < INSBUFFSIZE && innerEnable == true) {
 
 		return true;
 	} else {
@@ -56,11 +61,11 @@ void DecodeUnit::m_setNextEnable(bool result) {
 }
 
 void DecodeUnit::m_calc() {
-	if(activeList.size() <= LISTSIZE && ins.size() > 0 && freeList.size() > 0 && iu->m_getEnable() == true) {
+	if(activeListNum < REGISTER_SIZE && ins.size() > 0 && freeList.size() > 0 && iu->m_getEnable() == true) {
 		Instruction input = ins.front();
 		ins.pop_front();
 	
-		if(input.m_getOp() == "I" || input.m_getOp() == "A" || input.m_getOp() == "M" || input.m_getOp() == "L") { //rs,rt,rd
+		if(input.m_getOp() == INTEGER || input.m_getOp() == ADDFP || input.m_getOp() == MULTIFP || input.m_getOp() == LOAD) { //rs,rt,rd
 			int rd = std::stoi(input.m_getRd(),nullptr,16); 
 			int rs = std::stoi(input.m_getRs(),nullptr,16);
 			int rt = std::stoi(input.m_getRt(),nullptr,16);
@@ -76,14 +81,13 @@ void DecodeUnit::m_calc() {
 			input.m_setPs(mapTable[rs]);
 			input.m_setPt(mapTable[rt]);
 
-			activeList.push(actItem);
-			activeListNum++;
+			activeList[activeListNum++] = actItem;
 
 			ins.push_front(input);
 
 			innerEnable = true;
 			m_setNextEnable(true);
-		} else if (input.m_getOp() == "S" || input.m_getOp() == "B") { //rs,rt 
+		} else if (input.m_getOp() == STORE || input.m_getOp() == BRANCH) { //rs,rt 
 			int rs = std::stoi(input.m_getRs(),nullptr,16);
 			int rt = std::stoi(input.m_getRt(),nullptr,16);
 			int freeReg = m_getFreeList();
@@ -97,8 +101,7 @@ void DecodeUnit::m_calc() {
 			input.m_setPs(mapTable[rs]);
 			input.m_setPt(mapTable[rt]);
 
-			activeList.push(actItem);
-			activeListNum++;
+			activeList[activeListNum++] = actItem;
 
 			ins.push_front(input);
 
@@ -108,7 +111,7 @@ void DecodeUnit::m_calc() {
 			cout<<"wrong instruction op : "<<input.m_getId()<<endl;
 		}
 	} else { //stall 
-		if(activeList.size() >= LISTSIZE || freeList.size() <= 0) {
+		if(activeListNum >= REGISTER_SIZE || freeList.size() <= 0) {
 			Instruction temp = ins.front();
 			ins.pop_front();
 
@@ -125,7 +128,9 @@ void DecodeUnit::m_edge() { //already checked queus is available
 	if(nextEnable == true) {
 		Instruction temp = ins.front();
 		temp.m_setPipelineLog("D");
+
 		iu->m_transmit(temp);
+		iu->m_getBusyTable(m_transmitBusyTable());
 
 		ins.pop_front();
 	}

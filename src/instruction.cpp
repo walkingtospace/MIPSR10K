@@ -209,6 +209,18 @@ void Instruction::m_setPipelineLog(string input) {
 	pipelineLog.push_back(input);
 }
 
-void Instruction::print() {
+void Instruction::m_printIns() {
 	cout<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra<<endl;
+}
+
+void Instruction::m_printPipeline() {
+	deque<string> temp = m_getPipelineLog();
+	
+	int size = temp.size();
+	for(int j=0; j<m_getId() ; ++j) cout<<"  ";
+	for(int i=0; i< size; ++i) {
+		cout<<temp.front()<<" ";
+		temp.pop_front();
+	}
+	cout<<endl;
 }

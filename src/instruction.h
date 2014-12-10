@@ -65,5 +65,6 @@ public:
 	void m_setPipelineLog(string input);
 	/***************** a lot of getter/setter should be refactored later *****************************/
 
-	void print();
+	void m_printIns();
+	void m_printPipeline();
 };

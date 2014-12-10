@@ -8,16 +8,13 @@
 
 class DecodeUnit : public Module {
 public:
-	int BUFFSIZE;
-	int LISTSIZE;
-	int mapTable[32];
-	int busyBitTable[32];
+	int mapTable[REGISTER_SIZE];
+	int busyBitTable[REGISTER_SIZE];
 	int activeListNum;
 
 	deque <Instruction> ins; //MAXSIZE == 8
 	queue <int> freeList; //MAXSIZE == 32
-	queue <ActiveList> activeList; //MAXSIZE == 32
-	
+	ActiveList activeList[REGISTER_SIZE]; //MAXSIZE == 32
 
 	IssueUnit* iu;
 
@@ -26,6 +23,7 @@ public:
 
 	bool m_transmit(Instruction input);
 	int  m_getFreeList();
+	int* m_transmitBusyTable();
 
 	//virtual functions from Module
 	bool m_isClean();

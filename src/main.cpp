@@ -3,6 +3,7 @@
 #include "fetchUnit.h"
 #include "decodeUnit.h"
 #include "issueUnit.h"
+#include "executionUnit.h"
 
 void startPipeline(FetchUnit* fu, DecodeUnit* du, IssueUnit* iu) {
 	while(1) {
@@ -10,8 +11,8 @@ void startPipeline(FetchUnit* fu, DecodeUnit* du, IssueUnit* iu) {
 		du->m_calc();
 		iu->m_calc();
 
-		du->m_edge();
 		iu->m_edge();
+		du->m_edge();
 		fu->m_edge();
 		
 		if(fu->m_isClean() && du->m_isClean() && iu->m_isClean()) { //work is done
@@ -32,7 +33,9 @@ int main(int argc, char* argv[]) {
 
 	ifstream traceFile;
 	string input = "";
-	IssueUnit issueUnit;
+
+	ExecutionUnit exeUnit;
+	IssueUnit issueUnit(&exeUnit);
 	DecodeUnit decodeUnit(&issueUnit);
 	FetchUnit fetchUnit(&decodeUnit);
 	int insId = 0;
@@ -41,7 +44,7 @@ int main(int argc, char* argv[]) {
 
 	while(getline(traceFile, input)) {
 		Instruction insFromFile(input, insId);
-		insFromFile.print();
+		insFromFile.m_printIns();
 
 		fetchUnit.pushInstructions(insFromFile);
 		insId++;

@@ -6,25 +6,26 @@
 #include "executionUnit.h"
 #include "commitUnit.h"
 
-void startPipeline(FetchUnit* fu, DecodeUnit* du, IssueUnit* iu, ExecutionUnit* eu) {
-	int cnt = 10;
-	while(cnt--) {
+void startPipeline(FetchUnit* fu, DecodeUnit* du, IssueUnit* iu, ExecutionUnit* eu, CommitUnit* cu) {
+	
+	while(1) {
 		fu->m_calc();
 		du->m_calc();
 		iu->m_calc();
 		eu->m_calc();
+		cu->m_calc();
 
+		cu->m_edge();
 		eu->m_edge();
 		iu->m_edge();
 		du->m_edge();
 		fu->m_edge();
 		
-		if(fu->m_isClean() && du->m_isClean() && iu->m_isClean() && eu->m_isClean()) { //work is done
-			
+		if(fu->m_isClean() && du->m_isClean() && iu->m_isClean() && eu->m_isClean()) { //all work is done
+			//print pipeline
 			break;
 		}
 	}
-
 }
 
 
@@ -37,12 +38,14 @@ int main(int argc, char* argv[]) {
 
 	ifstream traceFile;
 	string input = "";
+	int insId = 0;
 
-	ExecutionUnit exeUnit;
+	CommitUnit commitUnit;
+	ExecutionUnit exeUnit(&commitUnit);
 	IssueUnit issueUnit(&exeUnit);
 	DecodeUnit decodeUnit(&issueUnit);
 	FetchUnit fetchUnit(&decodeUnit);
-	int insId = 0;
+	commitUnit.m_getActivelist(decodeUnit.activeList);
 	
 	traceFile.open(argv[1]);
 
@@ -54,7 +57,7 @@ int main(int argc, char* argv[]) {
 		insId++;
 	}
 
-	startPipeline(&fetchUnit, &decodeUnit, &issueUnit, &exeUnit);
+	startPipeline(&fetchUnit, &decodeUnit, &issueUnit, &exeUnit, &commitUnit);
 
 	return 0;
 }

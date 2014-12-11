@@ -11,7 +11,6 @@ public:
 	list<Instruction> FPQueue;
 	list<Instruction> AddressQueue;
 	list<Instruction> IntegerQueue;
-	int registerFile[32];
 	int* busyTable_ptr;
 
 	ExecutionUnit* eu;

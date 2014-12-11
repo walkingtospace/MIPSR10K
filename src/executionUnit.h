@@ -3,20 +3,24 @@
 #include "common.h"
 #include "module.h"
 #include "instruction.h"
+#include "commitUnit.h"
 
 class ExecutionUnit : public Module {
 public:
 	queue<Instruction> ALU1; //size == 1
 	queue<Instruction> ALU2; //size == 1
 	queue<Instruction> AddressUnit; //size == 1
-	Instruction FPAdder[FPADDER_SIZE][FPADDER_SIZE]; //support pipeline
-	Instruction FPMultiplier[FPADDER_SIZE][FPADDER_SIZE]; //support pipeline
+	Instruction FPAdder[3]; //support pipeline
+	Instruction FPMultiplier[3]; //support pipeline
 	
+	int FPAdder_ptr;
 	int FPAdder_cnt;
+	int FPMultiplier_ptr;
 	int FPMultiplier_cnt;
 	int* busyTable_ptr;
+	CommitUnit* cu;
 
-	ExecutionUnit();
+	ExecutionUnit(CommitUnit* cu);
 	~ExecutionUnit();
 
 	bool m_isALU1Full();
@@ -32,6 +36,7 @@ public:
 	void m_transmitToFPMultiplier(Instruction ins);
 
 	void m_getBusyTable(int* bt_ptr);
+	void m_writeBackToRF(int phyReg);
 
 	bool m_isClean();
 	bool m_getEnable();

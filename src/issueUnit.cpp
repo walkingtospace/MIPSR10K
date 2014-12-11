@@ -3,10 +3,6 @@
 IssueUnit::IssueUnit(ExecutionUnit* input) {
 	busyTable_ptr = NULL;
 	eu = input;
-
-	for(int i=0; i<32; ++i) { //32 is REGISTERFILE SIZE
-		registerFile[i] = 0;
-	}
 }
 
 IssueUnit::~IssueUnit() {}
@@ -105,6 +101,7 @@ void IssueUnit::m_calc() {
 /*******************************need refactoring later*******************************/
 void IssueUnit::m_edge() {
 	eu->m_getBusyTable(busyTable_ptr);
+
 	if(!eu->m_isALU1Full()) { //check next unit is available
 		int size = IntegerQueue.size(); 	//branch priority
 		bool isTransmitted = false;
@@ -114,7 +111,7 @@ void IssueUnit::m_edge() {
 			IntegerQueue.pop_front();
 
 			if(temp.m_getOp() == BRANCH) {
-				if(m_busyTableCheck(temp.m_getPs()) && m_busyTableCheck(temp.m_getPt()) ) {
+				if(m_busyTableCheck(temp.m_getPs()) == true && m_busyTableCheck(temp.m_getPt()) == true) {
 					temp.m_setPipelineLog("I");
 
 					eu->m_transmitToALU1(temp);
@@ -137,7 +134,7 @@ void IssueUnit::m_edge() {
 				IntegerQueue.pop_front();
 
 				if(temp.m_getOp() == INTEGER) {
-					if(m_busyTableCheck(temp.m_getPs()) && m_busyTableCheck(temp.m_getPt()) ) {
+					if(m_busyTableCheck(temp.m_getPs()) == true && m_busyTableCheck(temp.m_getPt()) == true ) {
 						temp.m_setPipelineLog("I");
 
 						eu->m_transmitToALU1(temp);
@@ -161,7 +158,7 @@ void IssueUnit::m_edge() {
 			Instruction temp = IntegerQueue.front();
 			IntegerQueue.pop_front();
 
-			if(m_busyTableCheck(temp.m_getPs()) && m_busyTableCheck(temp.m_getPt()) ) {
+			if(m_busyTableCheck(temp.m_getPs()) == true && m_busyTableCheck(temp.m_getPt()) == true) {
 				temp.m_setPipelineLog("I");
 
 				eu->m_transmitToALU2(temp);
@@ -178,22 +175,12 @@ void IssueUnit::m_edge() {
 			Instruction temp = AddressQueue.front();
 			AddressQueue.pop_front();
 
-			if(temp.m_getOp() == STORE) {
-				if(m_busyTableCheck(temp.m_getPs()) && m_busyTableCheck(temp.m_getPt()) ) {
-					temp.m_setPipelineLog("I");
+			if(m_busyTableCheck(temp.m_getPs()) == true && m_busyTableCheck(temp.m_getPt()) == true) {
+				temp.m_setPipelineLog("I");
 
-					eu->m_transmitToAddressUnit(temp);
-				} else {
-					IntegerQueue.push_back(temp);
-				}
-			} else if(temp.m_getOp() == LOAD) {
-				if(m_busyTableCheck(temp.m_getPs()) && m_busyTableCheck(temp.m_getPt()) && m_busyTableCheck(temp.m_getPd()) ) {
-					temp.m_setPipelineLog("I");
-
-					eu->m_transmitToAddressUnit(temp);
-				} else {
-					IntegerQueue.push_back(temp);
-				}
+				eu->m_transmitToAddressUnit(temp);
+			} else {
+				IntegerQueue.push_back(temp);
 			}
 		}
 	} 
@@ -205,7 +192,7 @@ void IssueUnit::m_edge() {
 			Instruction temp = FPQueue.front();
 			FPQueue.pop_front();
 
-			if(temp.m_getOp() == ADDFP && m_busyTableCheck(temp.m_getPs()) && m_busyTableCheck(temp.m_getPt()) && m_busyTableCheck(temp.m_getPd())) {
+			if(temp.m_getOp() == ADDFP && m_busyTableCheck(temp.m_getPs()) == true && m_busyTableCheck(temp.m_getPt()) == true) {
 				
 				temp.m_setPipelineLog("I");
 				eu->m_transmitToFPAdder(temp);
@@ -216,21 +203,20 @@ void IssueUnit::m_edge() {
 			}  
 		} //end for
 	}
-
+		
 	if(!eu->m_isMultiplierFull()) {
 		int size = FPQueue.size();
-	
+
 		for(int i=0; i<size; ++i) {
 			Instruction temp = FPQueue.front();
 			FPQueue.pop_front();
-	
-			if(temp.m_getOp() == MULTIFP && m_busyTableCheck(temp.m_getPs()) && m_busyTableCheck(temp.m_getPt()) && m_busyTableCheck(temp.m_getPd())) {
+			
+			if(temp.m_getOp() == MULTIFP && m_busyTableCheck(temp.m_getPs()) == true && m_busyTableCheck(temp.m_getPt()) == true) {
 				temp.m_setPipelineLog("I");
 				eu->m_transmitToFPMultiplier(temp);
-
+		
 				break;
 			} else {
-				busyTable_ptr[temp.m_getPd()] = 0;
 				FPQueue.push_back(temp);
 			}  
 		} //end for

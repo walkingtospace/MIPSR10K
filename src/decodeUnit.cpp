@@ -70,10 +70,11 @@ void DecodeUnit::m_calc() {
 			int rt = std::stoi(input.m_getRt(),nullptr,16);
 			int freeReg = m_getFreeList();
 			int oldFreeReg =  mapTable[rd];
-
+			
 			busyBitTable[freeReg] = 1;
 			mapTable[rd] = freeReg;
 			ActiveList actItem(oldFreeReg, rd, 0); //dest, arch, doneBit
+
 
 			input.m_setActivelistNum(activeListNum);
 			input.m_setPd(freeReg);

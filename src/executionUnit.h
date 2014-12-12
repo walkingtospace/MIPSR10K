@@ -18,11 +18,14 @@ public:
 	int FPMultiplier_ptr;
 	int FPMultiplier_cnt;
 	int* busyTable_ptr;
+	vector<ActiveList>* al_ptr;
 	CommitUnit* cu;
 
 	ExecutionUnit(CommitUnit* cu);
 	~ExecutionUnit();
 
+	void m_setActiveDonebit(int bit, int activeTag);
+	void m_getRefToActivelist(vector<ActiveList>* al_ptr);
 	bool m_isALU1Full();
 	bool m_isALU2Full();
 	bool m_isAddressUnitFull();

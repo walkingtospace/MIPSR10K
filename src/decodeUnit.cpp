@@ -4,13 +4,16 @@ DecodeUnit::DecodeUnit(IssueUnit* input) {
 	iu = input;
 	activeListNum = 0;
 
-	for(int i=0 ; i<REGISTER_SIZE ; ++i) { //32 is QUEUESIZE
-		freeList.push(i);
+	for(int i=0 ; i<REGISTER_SIZE ; ++i) { //32 is QUEUESIZE;
 		mapTable[i] = i;
 	}
 
-	for(int i=0; i<REGISTER_SIZE ; ++i) {
+	for(int i=0; i<FREELIST_SIZE ; ++i) {
 		busyBitTable[i] = 0;
+	}
+
+	for(int i=32; i<FREELIST_SIZE ; ++i) {
+		freeList.push(i);
 	}
 }
 
@@ -23,10 +26,14 @@ bool DecodeUnit::m_transmit(Instruction input) {
 }
 
 int DecodeUnit::m_getFreeList() {
-	int reg = freeList.front();
-	freeList.pop();
+	if(!freeList.empty()) {
+		int reg = freeList.front();
+		freeList.pop();
 
-	return reg; 
+		return reg; 
+	} else {
+		return -1;
+	}
 }
 
 int* DecodeUnit::m_transmitBusyTable() {
@@ -71,17 +78,18 @@ void DecodeUnit::m_calc() {
 			int freeReg = m_getFreeList();
 			int oldFreeReg =  mapTable[rd];
 			
-			busyBitTable[freeReg] = 1;
-			mapTable[rd] = freeReg;
-			ActiveList actItem(oldFreeReg, rd, 0); //dest, arch, doneBit
-
+			ActiveList actItem(oldFreeReg, rd, 0, activeListNum); //dest, arch, doneBit
 
 			input.m_setActivelistNum(activeListNum);
 			input.m_setPd(freeReg);
 			input.m_setPs(mapTable[rs]);
 			input.m_setPt(mapTable[rt]);
 
-			activeList[activeListNum++] = actItem;
+			busyBitTable[freeReg] = 1;
+			mapTable[rd] = freeReg;
+	
+			activeList.push_back(actItem);
+			activeListNum++;
 
 			ins.push_front(input);
 
@@ -93,13 +101,14 @@ void DecodeUnit::m_calc() {
 			int rd = std::stoi(input.m_getRd(),nullptr,16);
 			int oldFreeReg = mapTable[rd];
 	
-			ActiveList actItem(oldFreeReg, rt, 0); //dest, arch, doneBit
+			ActiveList actItem(oldFreeReg, rt, 0,activeListNum); //dest, arch, doneBit
 
 			input.m_setActivelistNum(activeListNum);
 			input.m_setPs(mapTable[rs]);
 			input.m_setPt(mapTable[rt]);
-
-			activeList[activeListNum++] = actItem;
+	
+			activeList.push_back(actItem);
+			activeListNum++;
 
 			ins.push_front(input);
 

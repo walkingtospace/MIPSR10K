@@ -7,14 +7,18 @@
 
 class CommitUnit : public Module { //commit should be done in order by referring to active list
 public:
-	list<Instruction> ins;
-	ActiveList* al_ptr;
+	vector<Instruction> result;
+	queue<Instruction> ins;
+	queue<int>* fl_ptr;
+	vector<ActiveList>* al_ptr;
 
 	CommitUnit();
 	~CommitUnit();
 
 	void m_transmit(Instruction input);
-	void m_getActivelist(ActiveList* ptr);
+	void m_getRefToActivelist(vector<ActiveList>* al_ptr);
+	void m_getRefToFreelist(queue <int>* freeList);
+	vector<Instruction> m_dumpInstructions();
 
 	bool m_isClean();
 	bool m_getEnable();

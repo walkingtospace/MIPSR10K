@@ -210,16 +210,18 @@ void Instruction::m_setPipelineLog(string input) {
 }
 
 void Instruction::m_printIns() {
-	cout<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra<<endl;
+	cout<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra;
 }
 
 void Instruction::m_printPipeline() {
 	deque<string> temp = m_getPipelineLog();
-	
 	int size = temp.size();
+
+	m_printIns(); cout<<"|";
+
 	for(int j=0; j<m_getId() ; ++j) cout<<"  ";
 	for(int i=0; i< size; ++i) {
-		cout<<temp.front()<<" ";
+		cout<<temp.front()<<"|";
 		temp.pop_front();
 	}
 	cout<<endl;

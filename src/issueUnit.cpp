@@ -60,7 +60,7 @@ bool IssueUnit::m_busyTableCheck(int phyRegNum) {
 }
 
 bool IssueUnit::m_isClean() {
-	if(FPQueue.size() == 0 && AddressQueue.size() == 0 && IntegerQueue.size() == 0) {
+	if(ins.size() == 0 && FPQueue.size() == 0 && AddressQueue.size() == 0 && IntegerQueue.size() == 0) {
 
 		return true;
 	} else {
@@ -85,7 +85,7 @@ void IssueUnit::m_calc() {
 	for(int i=0; i<size ; ++i) {
 		Instruction insItem = ins.front();
 		ins.pop_front();
-	
+		
 		if(insItem.m_getOp() == INTEGER || insItem.m_getOp() == BRANCH) {
 			IntegerQueue.push_back(insItem);
 		} else if(insItem.m_getOp() == ADDFP || insItem.m_getOp() == MULTIFP ) {
@@ -203,7 +203,7 @@ void IssueUnit::m_edge() {
 			}  
 		} //end for
 	}
-		
+
 	if(!eu->m_isMultiplierFull()) {
 		int size = FPQueue.size();
 
@@ -214,7 +214,7 @@ void IssueUnit::m_edge() {
 			if(temp.m_getOp() == MULTIFP && m_busyTableCheck(temp.m_getPs()) == true && m_busyTableCheck(temp.m_getPt()) == true) {
 				temp.m_setPipelineLog("I");
 				eu->m_transmitToFPMultiplier(temp);
-		
+
 				break;
 			} else {
 				FPQueue.push_back(temp);

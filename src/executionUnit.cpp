@@ -17,6 +17,21 @@ ExecutionUnit::ExecutionUnit(CommitUnit* cu_ptr) {
 
 ExecutionUnit::~ExecutionUnit() {}
 
+
+void ExecutionUnit::m_setActiveDonebit(int bit, int activeTag) {
+	int alSize = al_ptr->size();
+	for(int i=0; i< alSize ; i++) {
+		if( al_ptr->at(i).activeTag == activeTag) {
+			al_ptr->at(i).m_setDonebit(bit);
+			
+		}
+	}
+}
+
+void ExecutionUnit::m_getRefToActivelist(vector<ActiveList>* al) {
+	al_ptr = al;
+}
+
 bool ExecutionUnit::m_isALU1Full() {
 	if(ALU1.empty()) {
 
@@ -140,6 +155,7 @@ void ExecutionUnit::m_calc() {
 
 		} else if(temp.m_getOp() == INTEGER) {
 			m_writeBackToRF(temp.m_getPd()); //set busytable[phyReg] as 0
+			m_setActiveDonebit(1, temp.m_getActivelistNum());
 
 			cu->m_transmit(temp);
 		}
@@ -159,7 +175,11 @@ void ExecutionUnit::m_calc() {
 			Instruction temp = AddressUnit.front();
 			AddressUnit.pop();
 
-			temp.m_setPipelineLog("E");
+			temp.m_setPipelineLog("F");
+	
+			m_writeBackToRF(temp.m_getPd()); //writeback
+			m_setActiveDonebit(1, temp.m_getActivelistNum());
+
 			cu->m_transmit(temp);
 		}
 	}
@@ -167,7 +187,7 @@ void ExecutionUnit::m_calc() {
 	if(FPAdder_cnt > 0) { //rightshift
 		FPAdder[0].m_setPipelineLog("E");
 		FPAdder[1].m_setPipelineLog("E");
-		FPAdder[2].m_setPipelineLog("E");
+		FPAdder[2].m_setPipelineLog("F");
 
 		Instruction dummy;
 		Instruction temp = FPAdder[2];
@@ -182,15 +202,17 @@ void ExecutionUnit::m_calc() {
 			FPAdder_ptr = 0;
 			FPAdder_cnt--;
 
-			cu->m_transmit(temp);
 			m_writeBackToRF(temp.m_getPd()); //writeback
+			m_setActiveDonebit(1, temp.m_getActivelistNum());
+
+			cu->m_transmit(temp);
 		}
 	}
 
 	if(FPMultiplier_cnt > 0) { //rightshift
 		FPMultiplier[0].m_setPipelineLog("E");
 		FPMultiplier[1].m_setPipelineLog("E");
-		FPMultiplier[2].m_setPipelineLog("E");
+		FPMultiplier[2].m_setPipelineLog("F");
 
 		Instruction dummy;
 		Instruction temp = FPMultiplier[2];
@@ -205,8 +227,10 @@ void ExecutionUnit::m_calc() {
 			FPMultiplier_ptr = 0;
 			FPMultiplier_cnt--;
 
-			cu->m_transmit(temp);
 			m_writeBackToRF(temp.m_getPd()); //writeback
+			m_setActiveDonebit(1, temp.m_getActivelistNum());
+
+			cu->m_transmit(temp);
 		}
 	}
 }

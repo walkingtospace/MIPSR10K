@@ -9,12 +9,12 @@
 class DecodeUnit : public Module {
 public:
 	int mapTable[REGISTER_SIZE];
-	int busyBitTable[REGISTER_SIZE];
+	int busyBitTable[FREELIST_SIZE];
 	int activeListNum;
 
 	deque <Instruction> ins; //MAXSIZE == 8
-	queue <int> freeList; //MAXSIZE == 32
-	ActiveList activeList[REGISTER_SIZE]; //MAXSIZE == 32
+	queue <int> freeList; //MAXSIZE == 64
+	vector<ActiveList> activeList; //MAXSIZE == 32
 
 	IssueUnit* iu;
 

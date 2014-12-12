@@ -14,6 +14,7 @@ using namespace std;
 
 const int INSBUFFSIZE = 8;
 const int REGISTER_SIZE = 32;
+const int FREELIST_SIZE = 64;
 const int FPADDER_SIZE = 3;
 const int FPMULTIPLIER_SIZE = 3;
 const string DUMMY_INSTRUCTION = "";

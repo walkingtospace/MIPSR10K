@@ -177,7 +177,7 @@ void ExecutionUnit::m_edge() {
 
 			Instruction temp = AddressUnit.front();
 			AddressUnit.pop();
-
+	
 			temp.m_setPipelineLog("E");
 
 			//m_writeBackToRF(temp.m_getPd()); //writeback

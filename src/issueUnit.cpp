@@ -193,7 +193,6 @@ void IssueUnit::m_edge() {
 			FPQueue.pop_front();
 
 			if(temp.m_getOp() == ADDFP && m_busyTableCheck(temp.m_getPs()) == true && m_busyTableCheck(temp.m_getPt()) == true) {
-				
 				temp.m_setPipelineLog("I");
 				eu->m_transmitToFPAdder(temp);
 

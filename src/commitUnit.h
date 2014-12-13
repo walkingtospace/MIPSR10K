@@ -9,6 +9,8 @@ class CommitUnit : public Module { //commit should be done in order by referring
 public:
 	vector<Instruction> result;
 	queue<Instruction> ins;
+	queue<Instruction> log;
+
 	queue<int>* fl_ptr;
 	vector<ActiveList>* al_ptr;
 	int* busyTable_ptr;
@@ -22,6 +24,7 @@ public:
 	vector<Instruction> m_dumpInstructions();
 	void m_getBusyTable(int* bt_ptr);
 	void m_writeBackToRF(int phyReg);
+	bool m_checkActivelist(Instruction item);
 
 
 	bool m_isClean();

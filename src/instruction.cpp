@@ -220,7 +220,6 @@ void Instruction::m_printIns(ofstream* output) {
 	} else {
 		*(output)<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra;
 	}
-	
 }
 
 void Instruction::m_printPipeline() {

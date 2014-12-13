@@ -22,7 +22,13 @@ vector<Instruction> CommitUnit::m_dumpInstructions() {
 }
 
 bool CommitUnit::m_isClean() {
-	return innerEnable;
+	if(ins.size() > 0) {
+		
+		return false;
+	} else {
+
+		return true;
+	}
 };
 
 bool CommitUnit::m_getEnable() {
@@ -37,6 +43,7 @@ void CommitUnit::m_setNextEnable(bool result) {
 void CommitUnit::m_calc() {
 	if(ins.size() > 0) {
 		if(ins.front().m_getOp() == LOAD || ins.front().m_getOp() == STORE) {
+
 			m_writeBackToRF(ins.front().m_getPd()); //writeback
 		}
 	}
@@ -62,27 +69,38 @@ void CommitUnit::m_edge() {
 	}
 	cout<<endl;
 */
-
 	int size = ins.size();
-
-	for(int i=0 ; i<size; ++i) {
+	
+	for(int i=0; i<size ; ++i) {
 		Instruction temp = ins.front();
 		ins.pop();
-		
-		vector<ActiveList>::iterator it = al_ptr->begin();
 
-		if(al_ptr->at(0).doneBit == 1 && temp.m_getActivelistNum() == al_ptr->at(0).activeTag) {
+		if(m_checkActivelist(temp) == true) {
 			fl_ptr->push(temp.m_getPd()); //release physical register	
-			al_ptr->erase(it);
-		
+			al_ptr->erase(al_ptr->begin());
+
 			temp.m_setPipelineLog("C");
 			temp.m_setStatus("Committed");
+
 			result.push_back(temp);
 		} else {
+			temp.m_setPipelineLog("S");
+			ins.push(temp);
+		}
+	}
+}
 
-			break;
+bool CommitUnit::m_checkActivelist(Instruction item) {
+	for(vector<ActiveList>::iterator it = al_ptr->begin() ; it != al_ptr->end() ; ++it) {
+		if(it->activeTag == item.m_getActivelistNum()) {
+			if(it != al_ptr->begin()){
+				
+				return false;
+			} 
+			
+			return true;
 		}
 	}
 
-	innerEnable = true;
+	return false; //not found
 }

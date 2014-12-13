@@ -216,7 +216,7 @@ void Instruction::m_printIns() {
 //overrided
 void Instruction::m_printIns(ofstream* output) {
 	if(op == LOAD || op == STORE) {
-		*(output)<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra<<"  ";
+		*(output)<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra<<" ";
 	} else {
 		*(output)<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra;
 	}

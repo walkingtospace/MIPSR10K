@@ -1,6 +1,6 @@
 [Execution Detail]
 ID | LINE | TYPE | Rs(Phy) | Rt(Phy) | Rd(Phy) | Activelist# | BranchMask | MemoryAddress | Status
 00 |    00 |     A |         01 |        01 |        32 |            00 |           0000 |      0x00000000 | Committed
-01 |    00 |     A |         32 |        32 |        33 |            01 |           0000 |      0x00000000 | Committed
-02 |    00 |     A |         33 |        33 |        34 |            02 |           0000 |      0x00000000 | Committed
-03 |    00 |     A |         34 |        34 |        35 |            03 |           0000 |      0x00000000 | Committed
+01 |    00 |     A |         02 |        02 |        33 |            01 |           0000 |      0x00000000 | Committed
+02 |    00 |     A |         03 |        04 |        34 |            02 |           0000 |      0x00000000 | Committed
+03 |    00 |     A |         06 |        07 |        35 |            03 |           0000 |      0x00000000 | Committed

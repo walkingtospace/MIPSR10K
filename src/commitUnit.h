@@ -11,6 +11,7 @@ public:
 	queue<Instruction> ins;
 	queue<int>* fl_ptr;
 	vector<ActiveList>* al_ptr;
+	int* busyTable_ptr;
 
 	CommitUnit();
 	~CommitUnit();
@@ -19,6 +20,9 @@ public:
 	void m_getRefToActivelist(vector<ActiveList>* al_ptr);
 	void m_getRefToFreelist(queue <int>* freeList);
 	vector<Instruction> m_dumpInstructions();
+	void m_getBusyTable(int* bt_ptr);
+	void m_writeBackToRF(int phyReg);
+
 
 	bool m_isClean();
 	bool m_getEnable();

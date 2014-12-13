@@ -18,6 +18,7 @@ const int FREELIST_SIZE = 64;
 const int FPADDER_SIZE = 3;
 const int FPMULTIPLIER_SIZE = 3;
 const string DUMMY_INSTRUCTION = "";
+const int ADDRESSUNIT_SIZE = 2;
 
 const string INTEGER = "I"; //rs, rt / rd
 const string ADDFP = "A"; //rs, rt / rd

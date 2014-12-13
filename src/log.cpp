@@ -45,6 +45,7 @@ void LoggingModule::m_printExecutionDetail(string inputName) {
 	string str_pt = "";
 	string str_pd = "";
 	string str_actNum = "";
+	string op = "";
 	int id = 0;
 	int line = 0;
 	int Ps = 0;
@@ -58,6 +59,7 @@ void LoggingModule::m_printExecutionDetail(string inputName) {
 	output<<"ID | LINE | TYPE | Rs(Phy) | Rt(Phy) | Rd(Phy) | Activelist# | BranchMask | MemoryAddress | Status"<<endl;
 
 	for(int i=0 ; i<ins.size() ; ++i) {
+		op = ins[i].m_getOp();
 		id = ins[i].m_getId();
 		line = ins[i].m_getLine();
 		Ps = ins[i].m_getPs();
@@ -72,7 +74,11 @@ void LoggingModule::m_printExecutionDetail(string inputName) {
 		str_pd = Pd<10 ? "0" + to_string((long long)Pd) : to_string((long long)Pd);
 		str_actNum = actNum<10 ? "0" + to_string((long long)actNum) : to_string((long long)actNum);
 		 
-		output<<str_id<<" |    "<<str_line<<" |     "<<ins[i].m_getOp()<<" |         "<<str_ps<<" |        "<<str_pt<<" |        "<<str_pd<<" |            "<<str_actNum<<" |           "<<ins[i].m_getBranchMask()<<" |      "<<ins[i].m_getMemoryAddress()<<" | "<<ins[i].m_getStatus()<<endl;
+		if(op == LOAD || op == STORE) {
+			output<<str_id<<" |    "<<str_line<<" |     "<<ins[i].m_getOp()<<"  |         "<<str_ps<<" |        "<<str_pt<<" |        "<<str_pd<<" |            "<<str_actNum<<" |           "<<ins[i].m_getBranchMask()<<" |      "<<"0x"+ins[i].m_getMemoryAddress()<<" | "<<ins[i].m_getStatus()<<endl;
+		} else {
+			output<<str_id<<" |    "<<str_line<<" |     "<<ins[i].m_getOp()<<" |         "<<str_ps<<" |        "<<str_pt<<" |        "<<str_pd<<" |            "<<str_actNum<<" |           "<<ins[i].m_getBranchMask()<<" |      "<<"0x"+ins[i].m_getMemoryAddress()<<" | "<<ins[i].m_getStatus()<<endl;
+		}
 	}
 	
 	output.close();

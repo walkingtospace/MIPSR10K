@@ -20,8 +20,9 @@ Instruction::Instruction(string inputStr, int insId) {
 	branchMask = "0000"; //0000
 	memoryAddress = "0x00000000"; //init with 0x00000000
 	status = ""; //init "not commited" -> canceld || committed
-	op = rs = rt = rd = extra = "";
+	op = rs = rt = rd = "";
 	ps = pt = pd = 0;
+	extra = "00000000";
 
 	istringstream iss(inputStr);
 	int insCnt = 0;
@@ -132,7 +133,7 @@ string Instruction::m_getBranchMask() {
 }
 
 string Instruction::m_getMemoryAddress() {
-	return memoryAddress;
+	return extra;
 }
 
 string Instruction::m_getStatus() {
@@ -150,7 +151,6 @@ void Instruction::m_setOp(string input) {
 
 void Instruction::m_setRs(string input) {
 	rs = input;
-
 }
 
 void Instruction::m_setRt(string input) {
@@ -215,7 +215,12 @@ void Instruction::m_printIns() {
 
 //overrided
 void Instruction::m_printIns(ofstream* output) {
-	*(output)<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra;
+	if(op == LOAD || op == STORE) {
+		*(output)<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra<<"  ";
+	} else {
+		*(output)<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra;
+	}
+	
 }
 
 void Instruction::m_printPipeline() {

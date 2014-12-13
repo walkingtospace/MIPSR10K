@@ -21,7 +21,7 @@ void startPipeline(FetchUnit* fu, DecodeUnit* du, IssueUnit* iu, ExecutionUnit* 
 		du->m_edge();
 		fu->m_edge();
 
-		if(fu->m_isClean() && du->m_isClean() && iu->m_isClean() && eu->m_isClean()) { //all work is done
+		if(fu->m_isClean() && du->m_isClean() && iu->m_isClean() && eu->m_isClean() && cu->m_isClean() ) { //all work is done
 			lg->m_pushInstruction(cu->m_dumpInstructions());
 
 			break;
@@ -52,6 +52,7 @@ int main(int argc, char* argv[]) {
 	exeUnit.m_getRefToActivelist(&decodeUnit.activeList);
 	commitUnit.m_getRefToActivelist(&decodeUnit.activeList); 
 	commitUnit.m_getRefToFreelist(&decodeUnit.freeList);
+	commitUnit.m_getBusyTable(decodeUnit.busyBitTable);
 	
 	traceFile.open(argv[1]);
 

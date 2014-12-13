@@ -85,7 +85,7 @@ void IssueUnit::m_calc() {
 	for(int i=0; i<size ; ++i) {
 		Instruction insItem = ins.front();
 		ins.pop_front();
-		
+
 		if(insItem.m_getOp() == INTEGER || insItem.m_getOp() == BRANCH) {
 			IntegerQueue.push_back(insItem);
 		} else if(insItem.m_getOp() == ADDFP || insItem.m_getOp() == MULTIFP ) {
@@ -180,7 +180,7 @@ void IssueUnit::m_edge() {
 
 				eu->m_transmitToAddressUnit(temp);
 			} else {
-				IntegerQueue.push_back(temp);
+				AddressQueue.push_back(temp);
 			}
 		}
 	} 

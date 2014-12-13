@@ -130,7 +130,11 @@ void ExecutionUnit::m_setNextEnable(bool result) {
 }
 
 void ExecutionUnit::m_calc() {
-	if(ALU1.empty() == false) { //branch or Integer
+
+}
+
+void ExecutionUnit::m_edge() {
+		if(ALU1.empty() == false) { //branch or Integer
 		Instruction temp = ALU1.front();
 		ALU1.pop();
 
@@ -140,6 +144,7 @@ void ExecutionUnit::m_calc() {
 
 		} else if(temp.m_getOp() == INTEGER) {
 			m_writeBackToRF(temp.m_getPd()); //set busytable[phyReg] as 0
+			m_setActiveDonebit(1, temp.m_getActivelistNum());
 
 			cu->m_transmit(temp);
 		}
@@ -167,17 +172,15 @@ void ExecutionUnit::m_calc() {
 			
 			temp.m_setPipelineLog("A");
 			AddressUnit.push(temp);
-
-			m_writeBackToRF(temp.m_getPd()); //set busytable[phyReg] as 0
 		} else if(AddressUnit.size() == 2) {
 			AddressUnit.pop(); //throw away the first one
 
 			Instruction temp = AddressUnit.front();
 			AddressUnit.pop();
 
-			temp.m_setPipelineLog("F");
-	
-			m_writeBackToRF(temp.m_getPd()); //writeback
+			temp.m_setPipelineLog("E");
+
+			//m_writeBackToRF(temp.m_getPd()); //writeback
 			m_setActiveDonebit(1, temp.m_getActivelistNum());
 
 			cu->m_transmit(temp);
@@ -232,14 +235,5 @@ void ExecutionUnit::m_calc() {
 
 			cu->m_transmit(temp);
 		}
-	}
-}
-
-void ExecutionUnit::m_edge() {
-	if(nextEnable == true) {
-		
-
-	} else {
-		//stall
 	}
 }

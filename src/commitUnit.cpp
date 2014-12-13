@@ -67,6 +67,7 @@ void CommitUnit::m_edge() {
 			al_ptr->erase(it);
 
 			temp.m_setPipelineLog("C");
+			temp.m_setStatus("Committed");
 			result.push_back(temp);
 		} else {
 

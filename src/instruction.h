@@ -66,5 +66,7 @@ public:
 	/***************** a lot of getter/setter should be refactored later *****************************/
 
 	void m_printIns();
+	void m_printIns(ofstream* output);
 	void m_printPipeline();
+	void m_printPipeline(ofstream* output);
 };

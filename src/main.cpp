@@ -8,7 +8,6 @@
 #include "log.h"
 
 void startPipeline(FetchUnit* fu, DecodeUnit* du, IssueUnit* iu, ExecutionUnit* eu, CommitUnit* cu, LoggingModule* lg) {
-	
 	while(1) {
 		fu->m_calc();
 		du->m_calc();
@@ -30,7 +29,6 @@ void startPipeline(FetchUnit* fu, DecodeUnit* du, IssueUnit* iu, ExecutionUnit* 
 	}
 }
 
-
 int main(int argc, char* argv[]) {
 	if(argc <= 1) {
 		cout<<"Please insert tracefile.txt"<<endl;
@@ -42,6 +40,7 @@ int main(int argc, char* argv[]) {
 	string input = "";
 	int insId = 0;
 
+	//initializations
 	LoggingModule log;
 	CommitUnit commitUnit;
 	ExecutionUnit exeUnit(&commitUnit);
@@ -49,30 +48,29 @@ int main(int argc, char* argv[]) {
 	DecodeUnit decodeUnit(&issueUnit);
 	FetchUnit fetchUnit(&decodeUnit);
 	
-	//connect bypasses
+	//Connect bypasses
 	exeUnit.m_getRefToActivelist(&decodeUnit.activeList);
 	commitUnit.m_getRefToActivelist(&decodeUnit.activeList); 
 	commitUnit.m_getRefToFreelist(&decodeUnit.freeList);
 	
 	traceFile.open(argv[1]);
-	
 
-	//front-end dump
+	//do front-end dump
 	while(getline(traceFile, input)) {
 		Instruction insFromFile(input, insId);
-		//insFromFile.m_printIns();
-
 		fetchUnit.pushInstructions(insFromFile);
+
 		insId++;
 	}
 
-	//do work
+	//do pipelining work
 	startPipeline(&fetchUnit, &decodeUnit, &issueUnit, &exeUnit, &commitUnit, &log);
-	log.m_printPipeline();
-	//print result
+
+	//do print results
+	log.m_sort(); //Sorting instructions by ID in ASC order.
+	log.m_printExecutionDetail(argv[1]);
+	cout<<endl<<endl;
+	log.m_printPipeline(argv[1]);
 
 	return 0;
 }
-
-
-

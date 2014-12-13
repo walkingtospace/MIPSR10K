@@ -213,6 +213,11 @@ void Instruction::m_printIns() {
 	cout<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra;
 }
 
+//overrided
+void Instruction::m_printIns(ofstream* output) {
+	*(output)<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra;
+}
+
 void Instruction::m_printPipeline() {
 	deque<string> temp = m_getPipelineLog();
 	int size = temp.size();
@@ -225,4 +230,19 @@ void Instruction::m_printPipeline() {
 		temp.pop_front();
 	}
 	cout<<endl;
+}
+
+//overrided
+void Instruction::m_printPipeline(ofstream* output) {
+	deque<string> temp = m_getPipelineLog();
+	int size = temp.size();
+
+	m_printIns(output); *(output)<<"|";
+
+	for(int j=0; j<m_getId() ; ++j) *(output)<<"  |";
+	for(int i=0; i< size; ++i) {
+		*(output)<<temp.front()<<"|";
+		temp.pop_front();
+	}
+	*(output)<<endl;
 }

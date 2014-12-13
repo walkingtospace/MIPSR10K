@@ -11,8 +11,9 @@ public:
 	LoggingModule();
 	~LoggingModule();
 	void m_pushInstruction(vector<Instruction> is);
-	void m_printPipeline();
+	void m_printPipeline(string inputName);
 	void m_sort();
+	void m_printExecutionDetail(string inputName);
 
 	void push(Instruction ins);
 	void print();

@@ -66,6 +66,7 @@ void DecodeUnit::m_setNextEnable(bool result) {
 	nextEnable = result;
 }
 
+//***************************a lot of redundancy. It needs refactoring later, or someday..*************************/
 void DecodeUnit::m_calc() {
 	if(activeListNum < REGISTER_SIZE && ins.size() > 0 && freeList.size() > 0 && iu->m_getEnable() == true) {
 		Instruction input = ins.front();
@@ -128,6 +129,10 @@ void DecodeUnit::m_calc() {
 
 		innerEnable = false;
 		nextEnable = false;
+	}
+
+	if(activeListNum == REGISTER_SIZE -1) {
+		activeListNum = 0;
 	}
 }
 

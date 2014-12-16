@@ -133,8 +133,9 @@ void ExecutionUnit::m_calc() {
 
 }
 
+//********************************* need refactoring later, or someday..*************************/
 void ExecutionUnit::m_edge() {
-		if(ALU1.empty() == false) { //branch or Integer
+	if(ALU1.empty() == false) { //branch or Integer
 		Instruction temp = ALU1.front();
 		ALU1.pop();
 

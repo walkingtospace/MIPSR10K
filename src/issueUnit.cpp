@@ -70,6 +70,10 @@ bool IssueUnit::m_isClean() {
 };
 
 bool IssueUnit::m_getEnable() {
+	if(FPQueue.size() >= QUEUE_SIZE || AddressQueue.size() >= QUEUE_SIZE && IntegerQueue.size() >= QUEUE_SIZE) {
+
+		return false;
+	}
 
 	return true;
 }

@@ -20,7 +20,7 @@ void startPipeline(FetchUnit* fu, DecodeUnit* du, IssueUnit* iu, ExecutionUnit* 
 		iu->m_edge();
 		du->m_edge();
 		fu->m_edge();
-
+		
 		if(fu->m_isClean() && du->m_isClean() && iu->m_isClean() && eu->m_isClean() && cu->m_isClean() ) { //all work is done
 			lg->m_pushInstruction(cu->m_dumpInstructions());
 

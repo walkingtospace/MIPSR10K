@@ -2,8 +2,9 @@
 
 #include "common.h"
 #include "module.h"
-#include "instruction.h"
 #include "issueUnit.h"
+#include "BranchUnit.h"
+#include "instruction.h"
 #include "activelist.h"
 
 class DecodeUnit : public Module {
@@ -16,14 +17,16 @@ public:
 	queue <int> freeList; //MAXSIZE == 64
 	vector<ActiveList> activeList; //MAXSIZE == 32
 
+	BranchUnit* bu;
 	IssueUnit* iu;
 
-	DecodeUnit(IssueUnit* input);
+	DecodeUnit(IssueUnit* input, BranchUnit* input_bu);
 	~DecodeUnit();
 
 	bool m_transmit(Instruction input);
 	int  m_getFreeList();
 	int* m_transmitBusyTable();
+	void m_restoreStatus();
 
 	//virtual functions from Module
 	bool m_isClean();

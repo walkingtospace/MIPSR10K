@@ -3,6 +3,12 @@
 IssueUnit::IssueUnit(ExecutionUnit* input) {
 	busyTable_ptr = NULL;
 	eu = input;
+
+	ALU1Enable = true;
+	ALU2Enable = true;
+	FPAdderEnable = true;
+	FPMultiEnable = true;
+	addressEnable = true;
 }
 
 IssueUnit::~IssueUnit() {}
@@ -11,6 +17,15 @@ bool IssueUnit::m_transmit(Instruction input) {
 	ins.push_back(input);
 
 	return true;
+}
+
+void IssueUnit::m_flushQueues() {
+	ins.clear();
+	FPQueue.clear();
+	AddressQueue.clear();
+	IntegerQueue.clear();
+
+
 }
 
 void IssueUnit::m_getBusyTable(int* bt_ptr) {
@@ -99,14 +114,18 @@ void IssueUnit::m_calc() {
 		}
 	}
 
-	nextEnable = true;
+	ALU1Enable = (eu->m_isALU1Full() == false) ? true : false;
+	ALU2Enable = (eu->m_isALU2Full() == false) ? true : false;
+	addressEnable = (eu->m_isAddressUnitFull() == false) ? true : false;
+	FPAdderEnable = (eu->m_isAdderFull() == false) ? true : false;
+	FPMultiEnable = (eu->m_isMultiplierFull() == false) ? true : false;
 }
 
 /*******************************need refactoring later*******************************/
 void IssueUnit::m_edge() {
 	eu->m_getBusyTable(busyTable_ptr);
 
-	if(!eu->m_isALU1Full()) { //check next unit is available
+	if(ALU1Enable ==true) { //check next unit is available
 		int size = IntegerQueue.size(); 	//branch priority
 		bool isTransmitted = false;
 
@@ -117,7 +136,7 @@ void IssueUnit::m_edge() {
 			if(temp.m_getOp() == BRANCH) {
 				if(m_busyTableCheck(temp.m_getPs()) == true && m_busyTableCheck(temp.m_getPt()) == true) {
 					temp.m_setPipelineLog("I");
-
+	
 					eu->m_transmitToALU1(temp);
 					isTransmitted = true;
 
@@ -155,26 +174,30 @@ void IssueUnit::m_edge() {
 		}
 	} //end if 
 	
-	if(!eu->m_isALU2Full()) {
+	if(ALU2Enable == true) {
 		int size = IntegerQueue.size();
 
 		for(int i=0; i<size; ++i) {
 			Instruction temp = IntegerQueue.front();
 			IntegerQueue.pop_front();
 
-			if(m_busyTableCheck(temp.m_getPs()) == true && m_busyTableCheck(temp.m_getPt()) == true) {
-				temp.m_setPipelineLog("I");
+			if(temp.m_getOp() == INTEGER) {
+				if(m_busyTableCheck(temp.m_getPs()) == true && m_busyTableCheck(temp.m_getPt()) == true) {
+					temp.m_setPipelineLog("I");
 
-				eu->m_transmitToALU2(temp);
+					eu->m_transmitToALU2(temp);
 
-				break;
+					break;
+				} else {
+					IntegerQueue.push_back(temp);
+				}
 			} else {
 				IntegerQueue.push_back(temp);
 			}
 		}
 	} 
 	
-	if(!eu->m_isAddressUnitFull()) {
+	if(FPAdderEnable == true) {
 		if(AddressQueue.size() > 0) {
 			Instruction temp = AddressQueue.front();
 			AddressQueue.pop_front();
@@ -189,7 +212,7 @@ void IssueUnit::m_edge() {
 		}
 	} 
 	
-	if(!eu->m_isAdderFull()) {
+	if(FPAdderEnable == true) {
 		int size = FPQueue.size();
 
 		for(int i=0; i<size; ++i) {
@@ -207,7 +230,7 @@ void IssueUnit::m_edge() {
 		} //end for
 	}
 
-	if(!eu->m_isMultiplierFull()) {
+	if(FPMultiEnable == true) {
 		int size = FPQueue.size();
 
 		for(int i=0; i<size; ++i) {

@@ -63,6 +63,7 @@ public:
 	void m_setMemoryAddress(string input);
 	void m_setStatus(string input);
 	void m_setPipelineLog(string input);
+	string m_backPipeline();
 	/***************** a lot of getter/setter should be refactored later *****************************/
 
 	void m_printIns();

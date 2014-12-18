@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <stack>
 
 using namespace std;
 
@@ -20,6 +21,7 @@ const int FPMULTIPLIER_SIZE = 3;
 const string DUMMY_INSTRUCTION = "";
 const int ADDRESSUNIT_SIZE = 2;
 const int QUEUE_SIZE = 16;
+const int BRANCH_STACK_SIZE = 4;
 
 const string INTEGER = "I"; //rs, rt / rd
 const string ADDFP = "A"; //rs, rt / rd

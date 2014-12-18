@@ -71,13 +71,19 @@ void LoggingModule::m_printExecutionDetail(string inputName) {
 		str_line = line<10 ? "0" + to_string((long long)line) : to_string((long long)line);
 		str_ps = Ps<10 ? "0" + to_string((long long)Ps) : to_string((long long)Ps);
 		str_pt = Pt<10 ? "0" + to_string((long long)Pt) : to_string((long long)Pt);
-		str_pd = Pd<10 ? "0" + to_string((long long)Pd) : to_string((long long)Pd);
+		
+		if(Pd < 0) { //not assigned
+			str_pd = "xx";
+		} else {
+			str_pd = Pd<10 ? "0" + to_string((long long)Pd) : to_string((long long)Pd);
+		}
+		
 		str_actNum = actNum<10 ? "0" + to_string((long long)actNum) : to_string((long long)actNum);
 		 
 		if(op == LOAD || op == STORE) {
-			output<<str_id<<" |    "<<str_line<<" |     "<<ins[i].m_getOp()<<"  |         "<<str_ps<<" |        "<<str_pt<<" |        "<<str_pd<<" |            "<<str_actNum<<" |           "<<ins[i].m_getBranchMask()<<" |      "<<"0x"+ins[i].m_getMemoryAddress()<<" | "<<ins[i].m_getStatus()<<endl;
+			output<<str_id<<" |    "<<str_line<<" |     "<<ins[i].m_getOp()<<"  |         "<<str_ps<<" |        "<<str_pt<<" |        "<<str_pd<<" |            "<<str_actNum<<" |           "<<ins[i].m_getBranchMask()<<" |      "<<"0x"+ ins[i].m_getExtra()<<" | "<<ins[i].m_getStatus()<<endl;
 		} else {
-			output<<str_id<<" |    "<<str_line<<" |     "<<ins[i].m_getOp()<<" |         "<<str_ps<<" |        "<<str_pt<<" |        "<<str_pd<<" |            "<<str_actNum<<" |           "<<ins[i].m_getBranchMask()<<" |      "<<"0x"+ins[i].m_getMemoryAddress()<<" | "<<ins[i].m_getStatus()<<endl;
+			output<<str_id<<" |    "<<str_line<<" |     "<<ins[i].m_getOp()<<" |         "<<str_ps<<" |        "<<str_pt<<" |        "<<str_pd<<" |            "<<str_actNum<<" |           "<<ins[i].m_getBranchMask()<<" |      "<<ins[i].m_getMemoryAddress()<<" | "<<ins[i].m_getStatus()<<endl;
 		}
 	}
 	

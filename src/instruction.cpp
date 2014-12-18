@@ -9,7 +9,7 @@ Instruction::Instruction() {
 	memoryAddress = "0x00000000"; //init with 0x00000000
 	status = ""; //init "not commited" -> canceld || committed
 	op = rs = rt = rd = extra = "";
-	ps = pt = pd = 0;
+	ps = pt = pd = -1;
 }
 
 Instruction::Instruction(string inputStr, int insId) {
@@ -21,8 +21,8 @@ Instruction::Instruction(string inputStr, int insId) {
 	memoryAddress = "0x00000000"; //init with 0x00000000
 	status = ""; //init "not commited" -> canceld || committed
 	op = rs = rt = rd = "";
-	ps = pt = pd = 0;
-	extra = "00000000";
+	ps = pt = pd = -1;
+	extra = "";
 
 	istringstream iss(inputStr);
 	int insCnt = 0;
@@ -53,8 +53,9 @@ Instruction::Instruction(string inputStr) {
 	branchMask = "0000"; //0000
 	memoryAddress = "0x00000000"; //init with 0x00000000
 	status = ""; //init "not commited" -> canceld || committed
-	op = rs = rt = rd = extra = "";
-	ps = pt = pd = 0;
+	op = rs = rt = rd = "";
+	ps = pt = pd = -1;
+	extra = "";
 
 	istringstream iss(inputStr);
 	int insCnt = 0;
@@ -133,7 +134,7 @@ string Instruction::m_getBranchMask() {
 }
 
 string Instruction::m_getMemoryAddress() {
-	return extra;
+	return memoryAddress;
 }
 
 string Instruction::m_getStatus() {
@@ -209,6 +210,15 @@ void Instruction::m_setPipelineLog(string input) {
 	pipelineLog.push_back(input);
 }
 
+string Instruction::m_backPipeline() {
+	if(pipelineLog.size() > 0) {
+		return pipelineLog.back();
+	} else {
+		return "X";
+	}
+}
+
+
 void Instruction::m_printIns() {
 	cout<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra;
 }
@@ -217,8 +227,10 @@ void Instruction::m_printIns() {
 void Instruction::m_printIns(ofstream* output) {
 	if(op == LOAD || op == STORE) {
 		*(output)<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra<<" ";
+	} else if(op == BRANCH) {
+		*(output)<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra<<"             ";
 	} else {
-		*(output)<<op<<" "<<rs<<" "<<rt<<" "<<rd<<" "<<extra;
+		*(output)<<op<<" "<<rs<<" "<<rt<<" "<<rd<<"                "<<extra;
 	}
 }
 

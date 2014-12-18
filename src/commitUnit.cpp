@@ -13,6 +13,7 @@ void CommitUnit::m_getRefToFreelist(queue <int>* freeList) {
 
 void CommitUnit::m_transmit(Instruction input) {
 	ins.push(input);
+
 	innerEnable = false;
 }
 
@@ -22,7 +23,7 @@ vector<Instruction> CommitUnit::m_dumpInstructions() {
 }
 
 bool CommitUnit::m_isClean() {
-	if(ins.size() > 0) {
+	if(ins.size() == 0) {
 		
 		return false;
 	} else {
@@ -60,32 +61,43 @@ void CommitUnit::m_writeBackToRF(int phyReg) {
 
 //********************************* need refactoring later, or someday..*************************/
 void CommitUnit::m_edge() {
-/*
+	/*
 	int alSize = al_ptr->size();
+	
 	for(int i=0 ; i<alSize ; i++) {
-		if(al_ptr->at(i).doneBit == 1) {
+		if(al_ptr->at(i).doneBit == 0) {
 			cout<<al_ptr->at(i).activeTag<<" "<<al_ptr->at(i).DestReg<<" "<<al_ptr->at(i).doneBit<<endl;
 		}
 	}
 	cout<<endl;
-*/
+	*/
 	int size = ins.size();
-	
+
 	for(int i=0; i<size ; ++i) {
 		Instruction temp = ins.front();
 		ins.pop();
 
-		if(m_checkActivelist(temp) == true) {
-			fl_ptr->push(temp.m_getPd()); //release physical register	
-			al_ptr->erase(al_ptr->begin());
-
-			temp.m_setPipelineLog("C");
-			temp.m_setStatus("Committed");
-
+		if(temp.m_backPipeline() == "X") {
+			temp.m_setStatus("Canceled");
+		
 			result.push_back(temp);
 		} else {
-			temp.m_setPipelineLog("S");
-			ins.push(temp);
+			//cout<<al_ptr->size()<<"  "<<temp.m_getOp()<<" "<<temp.m_getActivelistNum()<<endl;
+			if(m_checkActivelist(temp) == true) {
+				if(temp.m_getPd() >= 0) {
+					fl_ptr->push(temp.m_getPd()); //release physical register	
+				}
+
+				al_ptr->erase(al_ptr->begin());
+
+				temp.m_setPipelineLog("C");
+				temp.m_setStatus("Committed");
+	
+				result.push_back(temp);
+			} else {
+				temp.m_setPipelineLog("S");
+				ins.push(temp);
+			}
 		}
 	}
 }

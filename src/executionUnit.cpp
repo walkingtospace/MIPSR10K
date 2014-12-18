@@ -1,10 +1,12 @@
 #include "executionUnit.h"
 
-ExecutionUnit::ExecutionUnit(CommitUnit* cu_ptr) {
+ExecutionUnit::ExecutionUnit(CommitUnit* cu_ptr, BranchUnit* bu_ptr) {
 	FPAdder_cnt = 0;
 	FPAdder_ptr = 0;
 	FPMultiplier_cnt = 0;
 	FPMultiplier_ptr = 0;
+	branchId = -1;
+	isMispredicted = false;
 
 	for(int i=0; i<FPADDER_SIZE ; ++i) {
 		Instruction emptyIns;
@@ -13,6 +15,7 @@ ExecutionUnit::ExecutionUnit(CommitUnit* cu_ptr) {
 	}
 
 	cu = cu_ptr;
+	bu = bu_ptr;
 }
 
 ExecutionUnit::~ExecutionUnit() {}
@@ -111,6 +114,24 @@ void ExecutionUnit::m_writeBackToRF(int phyReg) {
 	busyTable_ptr[phyReg] = 0;
 }
 
+void ExecutionUnit::m_getIUInstance(IssueUnit* input) {
+	iu = input;
+}
+
+bool ExecutionUnit::m_isMispredicted() {
+
+	return isMispredicted;
+}
+
+
+void ExecutionUnit::m_setMispredicted(bool value) {
+	isMispredicted = value;
+}
+
+int ExecutionUnit::m_getBranchId() {
+	return branchId;
+}
+
 bool ExecutionUnit::m_isClean() {
 	if(FPAdder_cnt == 0 && FPMultiplier_cnt == 0 && !m_isAddressUnitFull() && !m_isALU1Full() && !m_isALU2Full()) {
 		
@@ -139,11 +160,35 @@ void ExecutionUnit::m_edge() {
 		Instruction temp = ALU1.front();
 		ALU1.pop();
 
-		temp.m_setPipelineLog("E");
-
 		if(temp.m_getOp() == BRANCH) {
+			if(temp.m_getExtra() == "0") {
+				if(isMispredicted == true) {
+					temp.m_setPipelineLog("X");
+				} else {
+					temp.m_setPipelineLog("E");
+				}
 
+				m_setActiveDonebit(1, temp.m_getActivelistNum());
+
+				bu->m_pop(temp.m_getBranchMask());
+
+				cu->m_transmit(temp);
+			} else {
+				temp.m_setPipelineLog("X");
+				m_setActiveDonebit(1, temp.m_getActivelistNum());
+
+				branchId = temp.m_getId();
+				isMispredicted = true;
+
+				cu->m_transmit(temp);
+			}
 		} else if(temp.m_getOp() == INTEGER) {
+			if(isMispredicted == true) {
+				temp.m_setPipelineLog("X");
+			} else {
+				temp.m_setPipelineLog("E");
+			}
+			
 			m_writeBackToRF(temp.m_getPd()); //set busytable[phyReg] as 0
 			m_setActiveDonebit(1, temp.m_getActivelistNum());
 
@@ -155,10 +200,34 @@ void ExecutionUnit::m_edge() {
 		Instruction temp = ALU2.front();
 		ALU2.pop();
 
-		temp.m_setPipelineLog("E");
+		if(isMispredicted == true) {
+			temp.m_setPipelineLog("X");
+		} else {
+			temp.m_setPipelineLog("E");
+		}
 
 		if(temp.m_getOp() == BRANCH) {
+			if(temp.m_getExtra() == "0") {
+				if(isMispredicted == true) {
+					temp.m_setPipelineLog("X");
+				} else {
+					temp.m_setPipelineLog("E");
+				}
 
+				m_setActiveDonebit(1, temp.m_getActivelistNum());
+
+				bu->m_pop(temp.m_getBranchMask());
+
+				cu->m_transmit(temp);
+			} else {
+				temp.m_setPipelineLog("X");
+				m_setActiveDonebit(1, temp.m_getActivelistNum());
+
+				branchId = temp.m_getId();
+				isMispredicted = true;
+
+				cu->m_transmit(temp);
+			}
 		} else if(temp.m_getOp() == INTEGER) {
 			m_writeBackToRF(temp.m_getPd()); //set busytable[phyReg] as 0
 			m_setActiveDonebit(1, temp.m_getActivelistNum());
@@ -171,7 +240,12 @@ void ExecutionUnit::m_edge() {
 		if(AddressUnit.size() == 1) {
 			Instruction temp = AddressUnit.front(); //copy to simulate pipeline
 			
-			temp.m_setPipelineLog("A");
+			if(isMispredicted == true) {
+				temp.m_setPipelineLog("X");
+			} else {
+				temp.m_setPipelineLog("A");
+			}
+
 			AddressUnit.push(temp);
 		} else if(AddressUnit.size() == 2) {
 			AddressUnit.pop(); //throw away the first one
@@ -179,9 +253,12 @@ void ExecutionUnit::m_edge() {
 			Instruction temp = AddressUnit.front();
 			AddressUnit.pop();
 	
-			temp.m_setPipelineLog("E");
+			if(isMispredicted == true) {
+				temp.m_setPipelineLog("X");
+			} else {
+				temp.m_setPipelineLog("E");
+			}
 
-			//m_writeBackToRF(temp.m_getPd()); //writeback
 			m_setActiveDonebit(1, temp.m_getActivelistNum());
 
 			cu->m_transmit(temp);
@@ -189,9 +266,15 @@ void ExecutionUnit::m_edge() {
 	}
 
 	if(FPAdder_cnt > 0) { //rightshift
-		FPAdder[0].m_setPipelineLog("E");
-		FPAdder[1].m_setPipelineLog("E");
-		FPAdder[2].m_setPipelineLog("F");
+		if(isMispredicted == true) {
+			FPAdder[0].m_setPipelineLog("X");
+			FPAdder[1].m_setPipelineLog("X");
+			FPAdder[2].m_setPipelineLog("X");
+		} else {
+			FPAdder[0].m_setPipelineLog("E");
+			FPAdder[1].m_setPipelineLog("E");
+			FPAdder[2].m_setPipelineLog("F");
+		}
 
 		Instruction dummy;
 		Instruction temp = FPAdder[2];
@@ -214,9 +297,15 @@ void ExecutionUnit::m_edge() {
 	}
 
 	if(FPMultiplier_cnt > 0) { //rightshift
-		FPMultiplier[0].m_setPipelineLog("E");
-		FPMultiplier[1].m_setPipelineLog("E");
-		FPMultiplier[2].m_setPipelineLog("F");
+		if(isMispredicted == true) {
+			FPMultiplier[0].m_setPipelineLog("X");
+			FPMultiplier[1].m_setPipelineLog("X");
+			FPMultiplier[2].m_setPipelineLog("X");
+		} else {
+			FPMultiplier[0].m_setPipelineLog("E");
+			FPMultiplier[1].m_setPipelineLog("E");
+			FPMultiplier[2].m_setPipelineLog("F");
+		}
 
 		Instruction dummy;
 		Instruction temp = FPMultiplier[2];

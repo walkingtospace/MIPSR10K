@@ -2,9 +2,11 @@
 
 #include "common.h"
 #include "module.h"
-#include "instruction.h"
 #include "commitUnit.h"
+#include "issueUnit.h"
+#include "BranchUnit.h"
 
+class IssueUnit; //forward referencing for IU
 class ExecutionUnit : public Module {
 public:
 	queue<Instruction> ALU1; //size == 1
@@ -13,6 +15,9 @@ public:
 	Instruction FPAdder[3]; //support pipeline
 	Instruction FPMultiplier[3]; //support pipeline
 	
+
+	bool isMispredicted;
+	int branchId;
 	int FPAdder_ptr;
 	int FPAdder_cnt;
 	int FPMultiplier_ptr;
@@ -20,8 +25,10 @@ public:
 	int* busyTable_ptr;
 	vector<ActiveList>* al_ptr;
 	CommitUnit* cu;
+	IssueUnit* iu;
+	BranchUnit* bu;
 
-	ExecutionUnit(CommitUnit* cu);
+	ExecutionUnit(CommitUnit* cu, BranchUnit* bu);
 	~ExecutionUnit();
 
 	void m_setActiveDonebit(int bit, int activeTag);
@@ -40,6 +47,10 @@ public:
 
 	void m_getBusyTable(int* bt_ptr);
 	void m_writeBackToRF(int phyReg);
+	void m_getIUInstance(IssueUnit* iu);
+	bool m_isMispredicted();
+	void m_setMispredicted(bool value);
+	int m_getBranchId();
 
 	bool m_isClean();
 	bool m_getEnable();

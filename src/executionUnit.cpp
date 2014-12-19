@@ -56,7 +56,7 @@ bool ExecutionUnit::m_isALU2Full() {
 }
 
 bool ExecutionUnit::m_isAddressUnitFull() {
-	if(AddressUnit.empty()) {
+	if(AddressUnit.empty() == true ) {
 
 		return false;
 	}
@@ -133,6 +133,7 @@ int ExecutionUnit::m_getBranchId() {
 }
 
 bool ExecutionUnit::m_isClean() {
+	//cout<<FPAdder_cnt<<"  "<<FPMultiplier_cnt<< "  "<<m_isAddressUnitFull()<<"  "<<m_isALU1Full()<<"  "<<m_isALU2Full()<<endl;
 	if(FPAdder_cnt == 0 && FPMultiplier_cnt == 0 && !m_isAddressUnitFull() && !m_isALU1Full() && !m_isALU2Full()) {
 		
 		return true;
@@ -237,14 +238,33 @@ void ExecutionUnit::m_edge() {
 	}
 
 	if(AddressUnit.empty() == false) {
-		if(AddressUnit.size() == 1) {
-			Instruction temp = AddressUnit.front(); //copy to simulate pipeline
-			
+		Instruction temp = AddressUnit.front();
+		AddressUnit.pop();
+
+		if(temp.m_backPipeline() == "I") {
 			if(isMispredicted == true) {
 				temp.m_setPipelineLog("X");
 			} else {
 				temp.m_setPipelineLog("A");
 			}
+
+			AddressUnit.push(temp);
+		} else if(temp.m_backPipeline() == "A") {
+			if(isMispredicted == true) {
+				temp.m_setPipelineLog("X");
+			} else {
+				temp.m_setPipelineLog("E");
+				m_setActiveDonebit(1, temp.m_getActivelistNum());
+			}
+
+			cu->m_transmit(temp);
+		}
+
+		/*
+		if(AddressUnit.size() == 1) {
+			Instruction temp = AddressUnit.front(); //copy to simulate pipeline
+			
+			
 
 			AddressUnit.push(temp);
 		} else if(AddressUnit.size() == 2) {
@@ -263,6 +283,7 @@ void ExecutionUnit::m_edge() {
 
 			cu->m_transmit(temp);
 		}
+		*/
 	}
 
 	if(FPAdder_cnt > 0) { //rightshift

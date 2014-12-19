@@ -1,6 +1,8 @@
 #include "commitUnit.h"
 
-CommitUnit::CommitUnit() {}
+CommitUnit::CommitUnit() {
+	maxPipelineLen = 0;
+}
 CommitUnit::~CommitUnit() {}
 
 void CommitUnit::m_getRefToActivelist(vector<ActiveList>* al) {
@@ -25,10 +27,10 @@ vector<Instruction> CommitUnit::m_dumpInstructions() {
 bool CommitUnit::m_isClean() {
 	if(ins.size() == 0) {
 		
-		return false;
+		return true;
 	} else {
 
-		return true;
+		return false;
 	}
 };
 
@@ -82,18 +84,25 @@ void CommitUnit::m_edge() {
 		
 			result.push_back(temp);
 		} else {
-			//cout<<al_ptr->size()<<"  "<<temp.m_getOp()<<" "<<temp.m_getActivelistNum()<<endl;
 			if(m_checkActivelist(temp) == true) {
-				if(temp.m_getPd() >= 0) {
-					fl_ptr->push(temp.m_getPd()); //release physical register	
+				if(temp.pipelineLog.size() >= maxPipelineLen) {
+					maxPipelineLen = temp.pipelineLog.size();
+
+					if(temp.m_getPd() >= 0) {
+						fl_ptr->push(temp.m_getPd()); //release physical register	
+					}
+
+					al_ptr->erase(al_ptr->begin());
+
+					temp.m_setPipelineLog("C");
+					temp.m_setStatus("Committed");
+
+					result.push_back(temp);
+				} else {
+					
+					temp.m_setPipelineLog("S");
+					ins.push(temp);
 				}
-
-				al_ptr->erase(al_ptr->begin());
-
-				temp.m_setPipelineLog("C");
-				temp.m_setStatus("Committed");
-	
-				result.push_back(temp);
 			} else {
 				temp.m_setPipelineLog("S");
 				ins.push(temp);

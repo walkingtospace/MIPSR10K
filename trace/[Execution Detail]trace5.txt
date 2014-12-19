@@ -1,4 +1,0 @@
-[Execution Detail]
-ID | LINE | TYPE | Rs(Phy) | Rt(Phy) | Rd(Phy) | Activelist# | BranchMask | MemoryAddress | Status
-00 |    00 |     L  |         01 |        01 |        32 |            00 |           0000 |      0x00000000 | Committed
-01 |    00 |     L  |         32 |        32 |        33 |            01 |           0000 |      0x0000FFFF | Committed

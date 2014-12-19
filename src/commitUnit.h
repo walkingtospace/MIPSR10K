@@ -14,6 +14,7 @@ public:
 	queue<int>* fl_ptr;
 	vector<ActiveList>* al_ptr;
 	int* busyTable_ptr;
+	int maxPipelineLen;
 
 	CommitUnit();
 	~CommitUnit();

@@ -1,0 +1,7 @@
+[Pipeline Diagram]
+M 01 01 01                |F|D|I|E|E|F|C|
+M 01 01 01                |  |F|D|S|I|E|E|F|C|
+M 01 01 01                |  |  |F|D|S|S|I|E|E|F|C|
+L 01 01 01 FF |  |  |  |F|D|S|S|S|S|I|A|E|C|
+S 00 00 00 FF |  |  |  |  |F|D|S|I|A|E|S|S|S|S|C|
+L 00 00 00 FF |  |  |  |  |  |F|D|S|I|A|E|S|S|S|S|C|

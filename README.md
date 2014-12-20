@@ -18,19 +18,13 @@ MIPS R10000 architecture simulator with C++
 ## Class Diagram
 	
 ## Hardware Block Diagram
-Here are some of the options you can set in the config.
 
 ## Source
-`source` Should be either the path to the JSON resource to load, or a JavaScript
-object corresponding to the Timeline model.
 
 ## Test set
 
 ## References
 
-####Font Combination Preview:
-![Font Combination Preview](http://timeline.knightlab.com/static/img/make/font-options.png)
-  
 ## License
 This Source Code Form is subject to the terms of the Mozilla Public
 License, v. 2.0. If a copy of the MPL was not distributed with this

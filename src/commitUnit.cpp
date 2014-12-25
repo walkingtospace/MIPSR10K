@@ -1,7 +1,7 @@
 #include "commitUnit.h"
 
 CommitUnit::CommitUnit() {
-	maxPipelineLen = 0;
+	maxPipelineLen = 1;
 }
 CommitUnit::~CommitUnit() {}
 
@@ -85,7 +85,7 @@ void CommitUnit::m_edge() {
 			result.push_back(temp);
 		} else {
 			if(m_checkActivelist(temp) == true) {
-				if(temp.pipelineLog.size() >= maxPipelineLen) {
+				if(temp.pipelineLog.size() >= maxPipelineLen-1) {
 					maxPipelineLen = temp.pipelineLog.size();
 
 					if(temp.m_getPd() >= 0) {
@@ -99,7 +99,6 @@ void CommitUnit::m_edge() {
 
 					result.push_back(temp);
 				} else {
-					
 					temp.m_setPipelineLog("S");
 					ins.push(temp);
 				}

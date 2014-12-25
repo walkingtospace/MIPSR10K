@@ -26,13 +26,10 @@ void startPipeline(FetchUnit* fu, DecodeUnit* du, IssueUnit* iu, ExecutionUnit* 
 			int id = eu->m_getBranchId();
 
 			iu->m_flushQueues();
-			//du->m_restoreStatus();
-			//fu->m_rollback(id);
 
 			eu->m_setMispredicted(false);
 		}
 		
-		//cout<<fu->m_isClean()<<" "<<du->m_isClean()<<"  "<<iu->m_isClean()<<"  "<<eu->m_isClean()<<"  "<<cu->m_isClean()<<endl; 
 		if(fu->m_isClean() && du->m_isClean() && iu->m_isClean() && eu->m_isClean() && cu->m_isClean() ) { //all work is done
 			lg->m_pushInstruction(cu->m_dumpInstructions());
 

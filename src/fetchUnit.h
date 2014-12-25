@@ -2,7 +2,7 @@
 
 #include "common.h"
 #include "module.h"
-#include "DecodeUnit.h"
+#include "decodeUnit.h"
 #include "instruction.h"
 
 class FetchUnit : public Module {

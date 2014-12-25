@@ -259,31 +259,6 @@ void ExecutionUnit::m_edge() {
 
 			cu->m_transmit(temp);
 		}
-
-		/*
-		if(AddressUnit.size() == 1) {
-			Instruction temp = AddressUnit.front(); //copy to simulate pipeline
-			
-			
-
-			AddressUnit.push(temp);
-		} else if(AddressUnit.size() == 2) {
-			AddressUnit.pop(); //throw away the first one
-
-			Instruction temp = AddressUnit.front();
-			AddressUnit.pop();
-	
-			if(isMispredicted == true) {
-				temp.m_setPipelineLog("X");
-			} else {
-				temp.m_setPipelineLog("E");
-			}
-
-			m_setActiveDonebit(1, temp.m_getActivelistNum());
-
-			cu->m_transmit(temp);
-		}
-		*/
 	}
 
 	if(FPAdder_cnt > 0) { //rightshift

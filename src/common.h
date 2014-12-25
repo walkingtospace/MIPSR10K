@@ -13,6 +13,7 @@
 
 using namespace std;
 
+const int INT_MAX = 99999999;
 const int INSBUFFSIZE = 8;
 const int REGISTER_SIZE = 32;
 const int FREELIST_SIZE = 64;

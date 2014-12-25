@@ -1,0 +1,6 @@
+[Pipeline Diagram]
+I 01 01 01                |F|D|I|E|C|
+I 01 01 02                |  |F|D|I|E|C|
+I 02 02 03                |  |  |F|D|I|E|C|
+I 03 04 05                |  |  |  |F|D|I|E|C|
+I 06 07 08                |  |  |  |  |F|D|I|E|C|

@@ -21,7 +21,7 @@ In this project I implemented a cycle-accurate out-of-order simulator modelingth
 
 	$./MIPS trace0.txt
 
-Then it will make [pipeline]trace1.txt, [execution detail]trace1.txt outputs at the same directory
+Then it will make [pipeline]trace0.txt, [execution detail]trace0.txt outputs at the same directory
 
 **Output format**
 
@@ -29,8 +29,8 @@ Then it will make [pipeline]trace1.txt, [execution detail]trace1.txt outputs at 
     M 01 01 01                |F|D|I|E|E|F|C|
     M 01 01 01                |  |F|D|S|I|E|E|F|C|
     M 01 01 01                |  |  |F|D|S|S|I|E|E|F|C|
-    L 01 01 01 00000000 |  |  |  |F|D|S|S|S|S|I|A|E|C|
-    L 01 02 02 00000000 |  |  |  |  |F|D|S|S|S|S|S|I|A|E|C|
+    L 01 01 01 00000000       |  |  |  |F|D|S|S|S|S|I|A|E|C|
+    L 01 02 02 00000000       |  |  |  |  |F|D|S|S|S|S|S|I|A|E|C|
 
 **Machine configuration and assumption**
 

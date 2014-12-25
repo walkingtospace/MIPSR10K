@@ -54,7 +54,7 @@ Then it will make [pipeline]trace0.txt, [execution detail]trace0.txt outputs at 
 
 http://cseweb.ucsd.edu/classes/fa14/cse240A-a/pdf/04/MIPS_R10K.pdf
 
-http://www.ece.mtu.edu/faculty/rmkieckh/cla/4173/MIPS-R10K-uman1.pdf), p. 19:
+http://www.ece.mtu.edu/faculty/rmkieckh/cla/4173/MIPS-R10K-uman1.pdf
 
 http://cseweb.ucsd.edu/classes/fa14/cse240A-a/pdf/04/MIPS_R10K_MPR.pdf
 

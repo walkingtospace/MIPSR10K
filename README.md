@@ -5,15 +5,15 @@ MIPS R10000 architecture simulator with C++ for UCSD CSE 250A Computer Architect
 
 In this project I implemented a cycle-accurate out-of-order simulator modelingthe microarchitecture of the MIPS R10K. I implemented its backend (which includes renaming and everything afterwards), and also developed a trace file that will go into the class testing repository.
 
-**Source code **: 
+**Source code**
 
 	./src
 
-**Trace files** : 
+**Trace files** 
 	
     ./trace
 
-**How to execute:**
+**How to execute**
 
 	$copy ./trace/trace0.txt ./src/
 
@@ -23,7 +23,7 @@ In this project I implemented a cycle-accurate out-of-order simulator modelingth
 
 Then it will make [pipeline]trace1.txt, [execution detail]trace1.txt outputs at the same directory
 
-**Output format:**
+**Output format**
 
     [Pipeline Diagram]
     M 01 01 01                |F|D|I|E|E|F|C|
@@ -32,10 +32,9 @@ Then it will make [pipeline]trace1.txt, [execution detail]trace1.txt outputs at 
     L 01 01 01 00000000 |  |  |  |F|D|S|S|S|S|I|A|E|C|
     L 01 02 02 00000000 |  |  |  |  |F|D|S|S|S|S|S|I|A|E|C|
 
-**Machine configuration and assumption:**
+**Machine configuration and assumption**
 
 1) There would be only load,store,integer,branch,fpadd and fpmul operations
-
 
 2) There are 32 registers (architectural registers not physical ones), while register 0 is always zero. 
 
@@ -51,7 +50,6 @@ Then it will make [pipeline]trace1.txt, [execution detail]trace1.txt outputs at 
 
 8) Assume that all state updates occur on the clock edge that marks the transition between pipeline stage. For example, things will be enqued into the active list on the edge between Decode and Issue. Instructions will hang out in the I stage until they move to the execution units.
 
-
 **References**
 
 http://cseweb.ucsd.edu/classes/fa14/cse240A-a/pdf/04/MIPS_R10K.pdf
@@ -63,7 +61,7 @@ http://cseweb.ucsd.edu/classes/fa14/cse240A-a/pdf/04/MIPS_R10K_MPR.pdf
 http://cseweb.ucsd.edu/classes/fa14/cse240A-a/pdf/04/Gonzalez_Processor_Microarchitecture_2010_Claypool.pdf
 
 
-** License **
+**License**
 
 This Source Code Form is subject to the terms of the Mozilla Public
 License, v. 2.0. If a copy of the MPL was not distributed with this
